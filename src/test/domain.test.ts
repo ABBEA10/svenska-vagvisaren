@@ -30,3 +30,10 @@ describe("spaced repetition", () => {
   it("medium first review waits 1 day", () =>
     expect(scheduleCard({ interval_days: 0, ease: 2.5 }, "medel", now).interval_days).toBe(1));
 });
+
+import { passProbability } from "@/lib/domain";
+describe("pass probability (52 of 65)", () => {
+  it("perfect accuracy always passes", () => expect(passProbability(1)).toBe(1));
+  it("50% accuracy almost never passes", () => expect(passProbability(0.5)).toBeLessThan(0.001));
+  it("90% accuracy usually passes", () => expect(passProbability(0.9)).toBeGreaterThan(0.9));
+});
