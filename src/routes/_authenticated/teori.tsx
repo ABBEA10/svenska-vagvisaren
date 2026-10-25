@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { CheckCircle2, Clock, Image as ImageIcon, Landmark, ListChecks, Loader2, XCircle, Zap } from "lucide-react";
+import { BookMarked, CheckCircle2, Clock, Image as ImageIcon, Landmark, ListChecks, Loader2, XCircle, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { supabase } from "@/integrations/supabase/client";
@@ -11,6 +11,23 @@ import { CATEGORIES, DIFFICULTIES, XP, type Difficulty } from "@/lib/domain";
 import { awardXp } from "@/lib/progress";
 import { EXAM, SITUATIONS, type Question } from "@/lib/situations";
 import { cn } from "@/lib/utils";
+import { SOURCES } from "@/lib/sources";
+
+function SourceLink({ q }: { q: Question }) {
+  if (!q.sourceKey) return null;
+  const src = SOURCES[q.sourceKey];
+  return (
+    <a
+      href={src.url}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="mt-2 inline-flex items-center gap-1.5 rounded-lg border-2 bg-card px-2.5 py-1 text-xs font-semibold text-foreground hover:border-primary"
+    >
+      <BookMarked className="size-3.5" /> Källa: {src.name}
+      {q.sourceRef ? ` · ${q.sourceRef}` : ""} ↗
+    </a>
+  );
+}
 
 export const Route = createFileRoute("/_authenticated/teori")({
   head: () => ({
@@ -251,6 +268,7 @@ function Quiz({ session, onExit, onMore }: { session: Session; onExit: () => voi
                       </p>
                     )}
                     <p className="text-sm text-muted-foreground">{qq.explanation}</p>
+                    <SourceLink q={qq} />
                   </div>
                 </div>
               </div>
@@ -309,7 +327,8 @@ function Quiz({ session, onExit, onMore }: { session: Session; onExit: () => voi
           {instant && picked !== null && (
             <div className="rounded-xl bg-muted p-4 text-sm">
               <p className="mb-1 font-bold">{picked === q.correctIndex ? "Rätt! +10 XP" : "Inte riktigt."}</p>
-              {q.explanation}
+              <p>{q.explanation}</p>
+              <SourceLink q={q} />
             </div>
           )}
         </div>
