@@ -12,11 +12,15 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as AuthenticatedAnalysRouteImport } from './routes/_authenticated/analys'
 import { Route as AuthenticatedCoachRouteImport } from './routes/_authenticated/coach'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedFlashcardsRouteImport } from './routes/_authenticated/flashcards'
 import { Route as AuthenticatedKorloggRouteImport } from './routes/_authenticated/korlogg'
+import { Route as AuthenticatedSchemaRouteImport } from './routes/_authenticated/schema'
+import { Route as AuthenticatedStatistikRouteImport } from './routes/_authenticated/statistik'
 import { Route as AuthenticatedTeoriRouteImport } from './routes/_authenticated/teori'
+import { Route as AuthenticatedUppkorningRouteImport } from './routes/_authenticated/uppkorning'
 import { Route as ApiChatRouteImport } from './routes/api/chat'
 import { Route as AuthenticatedCoachIndexRouteImport } from './routes/_authenticated/coach.index'
 import { Route as AuthenticatedCoachThreadIdRouteImport } from './routes/_authenticated/coach.$threadId'
@@ -34,6 +38,11 @@ const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedAnalysRoute = AuthenticatedAnalysRouteImport.update({
+  id: '/analys',
+  path: '/analys',
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedCoachRoute = AuthenticatedCoachRouteImport.update({
   id: '/coach',
@@ -55,9 +64,24 @@ const AuthenticatedKorloggRoute = AuthenticatedKorloggRouteImport.update({
   path: '/korlogg',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedSchemaRoute = AuthenticatedSchemaRouteImport.update({
+  id: '/schema',
+  path: '/schema',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedStatistikRoute = AuthenticatedStatistikRouteImport.update({
+  id: '/statistik',
+  path: '/statistik',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedTeoriRoute = AuthenticatedTeoriRouteImport.update({
   id: '/teori',
   path: '/teori',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedUppkorningRoute = AuthenticatedUppkorningRouteImport.update({
+  id: '/uppkorning',
+  path: '/uppkorning',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const ApiChatRoute = ApiChatRouteImport.update({
@@ -80,11 +104,15 @@ const AuthenticatedCoachThreadIdRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/analys': typeof AuthenticatedAnalysRoute
   '/coach': typeof AuthenticatedCoachRouteWithChildren
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/flashcards': typeof AuthenticatedFlashcardsRoute
   '/korlogg': typeof AuthenticatedKorloggRoute
+  '/schema': typeof AuthenticatedSchemaRoute
+  '/statistik': typeof AuthenticatedStatistikRoute
   '/teori': typeof AuthenticatedTeoriRoute
+  '/uppkorning': typeof AuthenticatedUppkorningRoute
   '/api/chat': typeof ApiChatRoute
   '/coach/$threadId': typeof AuthenticatedCoachThreadIdRoute
   '/coach/': typeof AuthenticatedCoachIndexRoute
@@ -92,10 +120,14 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/analys': typeof AuthenticatedAnalysRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/flashcards': typeof AuthenticatedFlashcardsRoute
   '/korlogg': typeof AuthenticatedKorloggRoute
+  '/schema': typeof AuthenticatedSchemaRoute
+  '/statistik': typeof AuthenticatedStatistikRoute
   '/teori': typeof AuthenticatedTeoriRoute
+  '/uppkorning': typeof AuthenticatedUppkorningRoute
   '/api/chat': typeof ApiChatRoute
   '/coach/$threadId': typeof AuthenticatedCoachThreadIdRoute
   '/coach': typeof AuthenticatedCoachIndexRoute
@@ -105,11 +137,15 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
+  '/_authenticated/analys': typeof AuthenticatedAnalysRoute
   '/_authenticated/coach': typeof AuthenticatedCoachRouteWithChildren
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/flashcards': typeof AuthenticatedFlashcardsRoute
   '/_authenticated/korlogg': typeof AuthenticatedKorloggRoute
+  '/_authenticated/schema': typeof AuthenticatedSchemaRoute
+  '/_authenticated/statistik': typeof AuthenticatedStatistikRoute
   '/_authenticated/teori': typeof AuthenticatedTeoriRoute
+  '/_authenticated/uppkorning': typeof AuthenticatedUppkorningRoute
   '/api/chat': typeof ApiChatRoute
   '/_authenticated/coach/$threadId': typeof AuthenticatedCoachThreadIdRoute
   '/_authenticated/coach/': typeof AuthenticatedCoachIndexRoute
@@ -119,11 +155,15 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/auth'
+    | '/analys'
     | '/coach'
     | '/dashboard'
     | '/flashcards'
     | '/korlogg'
+    | '/schema'
+    | '/statistik'
     | '/teori'
+    | '/uppkorning'
     | '/api/chat'
     | '/coach/$threadId'
     | '/coach/'
@@ -131,10 +171,14 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/auth'
+    | '/analys'
     | '/dashboard'
     | '/flashcards'
     | '/korlogg'
+    | '/schema'
+    | '/statistik'
     | '/teori'
+    | '/uppkorning'
     | '/api/chat'
     | '/coach/$threadId'
     | '/coach'
@@ -143,11 +187,15 @@ export interface FileRouteTypes {
     | '/'
     | '/_authenticated'
     | '/auth'
+    | '/_authenticated/analys'
     | '/_authenticated/coach'
     | '/_authenticated/dashboard'
     | '/_authenticated/flashcards'
     | '/_authenticated/korlogg'
+    | '/_authenticated/schema'
+    | '/_authenticated/statistik'
     | '/_authenticated/teori'
+    | '/_authenticated/uppkorning'
     | '/api/chat'
     | '/_authenticated/coach/$threadId'
     | '/_authenticated/coach/'
@@ -183,6 +231,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/analys': {
+      id: '/_authenticated/analys'
+      path: '/analys'
+      fullPath: '/analys'
+      preLoaderRoute: typeof AuthenticatedAnalysRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/coach': {
       id: '/_authenticated/coach'
       path: '/coach'
@@ -211,11 +266,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedKorloggRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/schema': {
+      id: '/_authenticated/schema'
+      path: '/schema'
+      fullPath: '/schema'
+      preLoaderRoute: typeof AuthenticatedSchemaRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/statistik': {
+      id: '/_authenticated/statistik'
+      path: '/statistik'
+      fullPath: '/statistik'
+      preLoaderRoute: typeof AuthenticatedStatistikRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/teori': {
       id: '/_authenticated/teori'
       path: '/teori'
       fullPath: '/teori'
       preLoaderRoute: typeof AuthenticatedTeoriRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/uppkorning': {
+      id: '/_authenticated/uppkorning'
+      path: '/uppkorning'
+      fullPath: '/uppkorning'
+      preLoaderRoute: typeof AuthenticatedUppkorningRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/api/chat': {
@@ -256,19 +332,27 @@ const AuthenticatedCoachRouteWithChildren =
   AuthenticatedCoachRoute._addFileChildren(AuthenticatedCoachRouteChildren)
 
 interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAnalysRoute: typeof AuthenticatedAnalysRoute
   AuthenticatedCoachRoute: typeof AuthenticatedCoachRouteWithChildren
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedFlashcardsRoute: typeof AuthenticatedFlashcardsRoute
   AuthenticatedKorloggRoute: typeof AuthenticatedKorloggRoute
+  AuthenticatedSchemaRoute: typeof AuthenticatedSchemaRoute
+  AuthenticatedStatistikRoute: typeof AuthenticatedStatistikRoute
   AuthenticatedTeoriRoute: typeof AuthenticatedTeoriRoute
+  AuthenticatedUppkorningRoute: typeof AuthenticatedUppkorningRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAnalysRoute: AuthenticatedAnalysRoute,
   AuthenticatedCoachRoute: AuthenticatedCoachRouteWithChildren,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedFlashcardsRoute: AuthenticatedFlashcardsRoute,
   AuthenticatedKorloggRoute: AuthenticatedKorloggRoute,
+  AuthenticatedSchemaRoute: AuthenticatedSchemaRoute,
+  AuthenticatedStatistikRoute: AuthenticatedStatistikRoute,
   AuthenticatedTeoriRoute: AuthenticatedTeoriRoute,
+  AuthenticatedUppkorningRoute: AuthenticatedUppkorningRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
