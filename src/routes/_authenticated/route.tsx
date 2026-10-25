@@ -1,7 +1,8 @@
 import { createFileRoute, Link, Outlet, redirect, useNavigate } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import { BookOpenCheck, Car, Layers, LayoutDashboard, LogOut, MessageCircle, Moon, Sun } from "lucide-react";
+import { BarChart3, BookOpenCheck, CalendarRange, Car, ClipboardCheck, Layers, LayoutDashboard, LogOut, Menu, MessageCircle, Moon, Sun, Target } from "lucide-react";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { supabase } from "@/integrations/supabase/client";
 import logo from "@/assets/logo.png";
 
@@ -19,9 +20,14 @@ const NAV = [
   { to: "/dashboard", label: "Översikt", icon: LayoutDashboard },
   { to: "/coach", label: "AI Coach", icon: MessageCircle },
   { to: "/teori", label: "Teoriprov", icon: BookOpenCheck },
+  { to: "/uppkorning", label: "Uppkörning", icon: ClipboardCheck },
+  { to: "/schema", label: "Schema", icon: CalendarRange },
   { to: "/flashcards", label: "Flashcards", icon: Layers },
   { to: "/korlogg", label: "Körlogg", icon: Car },
+  { to: "/analys", label: "Svaghetsanalys", icon: Target },
+  { to: "/statistik", label: "Statistik", icon: BarChart3 },
 ] as const;
+const MOBILE = NAV.slice(0, 4);
 
 function ThemeToggle() {
   const [dark, setDark] = useState(false);
@@ -97,7 +103,7 @@ function AppShell() {
       </main>
 
       <nav className="fixed inset-x-0 bottom-0 z-20 grid grid-cols-5 border-t-2 bg-card md:hidden">
-        {NAV.map(({ to, label, icon: Icon }) => (
+        {MOBILE.map(({ to, label, icon: Icon }) => (
           <Link
             key={to}
             to={to}
@@ -108,6 +114,23 @@ function AppShell() {
             {label}
           </Link>
         ))}
+        <Sheet>
+          <SheetTrigger className="flex flex-col items-center gap-0.5 py-2 text-[11px] font-semibold text-muted-foreground">
+            <Menu className="size-5" />
+            Mer
+          </SheetTrigger>
+          <SheetContent side="bottom">
+            <SheetHeader><SheetTitle>Mer</SheetTitle></SheetHeader>
+            <div className="grid grid-cols-3 gap-2 p-4">
+              {NAV.slice(4).map(({ to, label, icon: Icon }) => (
+                <Link key={to} to={to} className="tile flex flex-col items-center gap-1 p-3 text-xs font-semibold">
+                  <Icon className="size-5" />
+                  {label}
+                </Link>
+              ))}
+            </div>
+          </SheetContent>
+        </Sheet>
       </nav>
     </div>
   );

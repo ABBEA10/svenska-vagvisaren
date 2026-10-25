@@ -3,6 +3,14 @@ import { createClient } from "@supabase/supabase-js";
 import { convertToModelMessages, type UIMessage } from "ai";
 import type { Database } from "@/integrations/supabase/types";
 
+const DRIVING_TEST = `Du är en trafikinspektör från Trafikverket som genomför en SIMULERAD uppkörning för B-körkort på svenska.
+- Börja med säkerhetskontroll (fråga om en kontroll, t.ex. bromsljus, däck, oljenivå) om den ingår.
+- Beskriv sedan en körsituation i taget (realistiska svenska miljöer) och fråga: "Vad gör du nu?" Vänta på svar.
+- Ge kort återkoppling efter varje svar (vad som var bra / vad en inspektör skulle anmärka på) och gå vidare.
+- Täck de moment eleven valt, ca 6–8 situationer totalt.
+- Avsluta med en bedömning: GODKÄND eller UNDERKÄND, styrkor, förbättringsområden och poäng 1–10 per moment, i markdown.
+- Var saklig och realistisk, som en riktig inspektör enligt Trafikverkets bedömningsgrunder.`;
+
 const INSTRUCTIONS = `Du är "Coachen" i Körkortscoachen – en erfaren, vänlig svensk trafiklärare för B-körkort.
 - Svara alltid på svenska, enkelt och konkret.
 - Förklara trafikregler kort med exempel från verkliga situationer i svensk trafik.
@@ -35,7 +43,7 @@ export const Route = createFileRoute("/api/chat")({
         }
         const { data: thread } = await supabase
           .from("chat_threads")
-          .select("id, title")
+          .select("id, title, kind")
           .eq("id", body.threadId)
           .maybeSingle();
         if (!thread) return new Response("Not found", { status: 404 });
@@ -54,7 +62,7 @@ export const Route = createFileRoute("/api/chat")({
             { onConflict: "thread_id,message_id" },
           );
           if (error) console.error("save user message", error);
-          if (thread.title === "Nytt samtal") {
+          if (thread.title === "Nytt samtal" && thread.kind === "coach") {
             const text = last.parts.map((p) => (p.type === "text" ? p.text : "")).join(" ").trim();
             if (text) {
               await supabase
@@ -70,7 +78,7 @@ export const Route = createFileRoute("/api/chat")({
           request,
           await convertToModelMessages(messages),
           messages,
-          INSTRUCTIONS,
+          thread.kind === "driving_test" ? DRIVING_TEST : INSTRUCTIONS,
           async (all) => {
             const assistant = all[all.length - 1];
             if (!assistant || assistant.role !== "assistant") return;

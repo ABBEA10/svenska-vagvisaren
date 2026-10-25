@@ -95,3 +95,17 @@ export function scheduleCard(
   else due.setDate(due.getDate() + interval);
   return { interval_days: interval, ease, due_at: due.toISOString() };
 }
+
+/** Probability of at least `passAt` correct out of `n` with per-question accuracy p (binomial). */
+export function passProbability(p: number, n = 65, passAt = 52) {
+  const q = Math.min(1, Math.max(0, p));
+  if (q === 1) return 1;
+  if (q === 0) return 0;
+  let total = 0;
+  let logC = 0; // log C(n, k), starting at k=0
+  for (let k = 0; k <= n; k++) {
+    if (k > 0) logC += Math.log((n - k + 1) / k);
+    if (k >= passAt) total += Math.exp(logC + k * Math.log(q) + (n - k) * Math.log(1 - q));
+  }
+  return Math.min(1, total);
+}

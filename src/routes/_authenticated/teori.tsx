@@ -12,6 +12,7 @@ import { awardXp } from "@/lib/progress";
 import { EXAM, SITUATIONS, type Question } from "@/lib/situations";
 import { cn } from "@/lib/utils";
 import { SOURCES } from "@/lib/sources";
+import { signUrl } from "@/lib/signs";
 
 function SourceLink({ q }: { q: Question }) {
   if (!q.sourceKey) return null;
@@ -38,6 +39,8 @@ export const Route = createFileRoute("/_authenticated/teori")({
       { property: "og:description", content: "Obegränsade teorifrågor, simulerade Trafikverksprov och bildfrågor." },
     ],
   }),
+  validateSearch: (s: Record<string, unknown>): { category?: string } =>
+    typeof s['category'] === "string" ? { category: s['category'] } : {},
   component: TheoryPage,
 });
 
@@ -58,7 +61,10 @@ function shuffle<T>(a: T[]) {
 function TheoryPage() {
   const gen = useServerFn(generateQuestions);
   const [mode, setMode] = useState<Mode>("practice");
-  const [category, setCategory] = useState<string>(CATEGORIES[0]);
+  const search = Route.useSearch();
+  const [category, setCategory] = useState<string>(
+    search.category && (CATEGORIES as readonly string[]).includes(search.category) ? search.category : CATEGORIES[0],
+  );
   const [difficulty, setDifficulty] = useState<Difficulty>("medel");
   const [loading, setLoading] = useState(false);
   const [session, setSession] = useState<Session | null>(null);
@@ -261,6 +267,9 @@ function Quiz({ session, onExit, onMore }: { session: Session; onExit: () => voi
                 <div className="flex gap-2">
                   {ok ? <CheckCircle2 className="size-5 shrink-0 text-success" /> : <XCircle className="size-5 shrink-0 text-destructive" />}
                   <div className="space-y-1">
+                    {qq.signCode && qq.signCode !== "none" && (
+                      <img src={signUrl(qq.signCode)} alt="Vägmärke" className="h-16 w-auto" />
+                    )}
                     <p className="font-semibold">{qq.question}</p>
                     {!ok && (
                       <p className="text-sm">
@@ -301,6 +310,11 @@ function Quiz({ session, onExit, onMore }: { session: Session; onExit: () => voi
         {q.image && <img src={q.image} alt="Trafiksituation" width={1024} height={640} className="aspect-[16/10] w-full object-cover" />}
         <div className="space-y-4 p-5">
           <span className="rounded-full bg-sign px-2.5 py-0.5 text-xs font-bold text-sign-foreground">{q.category}</span>
+          {q.signCode && q.signCode !== "none" && (
+            <div className="flex justify-center rounded-xl bg-muted py-5">
+              <img src={signUrl(q.signCode)} alt="Vägmärke" className="h-36 w-auto object-contain" />
+            </div>
+          )}
           <h2 className="text-xl font-bold md:text-2xl">{q.question}</h2>
           <div className="grid gap-2">
             {q.options.map((opt, i) => {

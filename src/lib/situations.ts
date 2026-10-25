@@ -13,6 +13,7 @@ export type Question = {
   image?: string;
   sourceKey?: SourceKey;
   sourceRef?: string;
+  signCode?: string;
 };
 
 /** Picture-based traffic situations. */
