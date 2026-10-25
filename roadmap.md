@@ -9,6 +9,7 @@
 - [x] Svaghetsanalys
 - [x] Statistik med sannolikhet att klara provet
 - [x] Bilder på vägmärken i vägmärkesfrågor
+- [x] Varierade frågevinklar och slumpade märken i vägmärkesövningar
 
 ## Senare
 - Märken/veckoutmaningar, röstassistent, uppläsning, import av provdatum, fler bildsituationer

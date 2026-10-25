@@ -37,6 +37,8 @@ export const Route = createFileRoute("/_authenticated/teori")({
       { name: "description", content: "Obegränsade teorifrågor, simulerade Trafikverksprov och bildfrågor." },
       { property: "og:title", content: "Teoriprov – Körkortscoachen AI" },
       { property: "og:description", content: "Obegränsade teorifrågor, simulerade Trafikverksprov och bildfrågor." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   validateSearch: (s: Record<string, unknown>): { category?: string } =>

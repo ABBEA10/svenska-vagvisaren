@@ -2,7 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { SOURCE_KEYS, SOURCES } from "./sources";
-import { SIGN_CODES, SIGNS } from "./signs";
+import { SIGN_CODES, SIGNS, planSignQuestions } from "./signs";
 
 const questionSchema = z.object({
   questions: z.array(
@@ -36,6 +36,7 @@ export const generateQuestions = createServerFn({ method: "POST" })
   }))
   .handler(async ({ data }) => {
     const { generateStructured } = await import("./ai.server");
+    const signPlan = data.category === "Vägmärken" ? planSignQuestions(data.count) : [];
     const out = await generateStructured(
       questionSchema,
       `Du är en expert på det svenska teoriprovet för B-körkort (Trafikverket). Skriv på korrekt svenska. Frågorna ska följa gällande svensk trafiklagstiftning och vara realistiska, som på riktiga provet. Varje fråga har exakt 4 svarsalternativ med ett korrekt svar. Förklaringen ska vara kort och pedagogisk.
@@ -44,8 +45,8 @@ ${SOURCE_GUIDE}
 sourceRef ska vara den exakta hänvisningen, t.ex. "3 kap. 18 §" eller vägmärkets beteckning "B1". Skriv bara en paragraf du är säker på; är du osäker, ange kapitlet. Skapa inte frågor som du inte kan belägga med någon av källorna.
 Vägmärken med bild: signCode kan vara en av dessa (koden visar en bild av märket för eleven):
 ${SIGN_GUIDE}
-I kategorin "Vägmärken" MÅSTE varje fråga ha en signCode från listan och handla om det märket (t.ex. "Vad betyder vägmärket?" eller "Hur ska du agera vid detta märke?"). Skriv då INTE märkets namn i frågetexten, eleven ser bilden. Använd olika märken. I andra kategorier: använd signCode när en bild hjälper, annars "none".`,
-      `Skapa ${data.count} unika flervalsfrågor i kategorin "${data.category}" med svårighetsgrad "${data.difficulty}". Variera korrekt svarsposition (correctIndex 0-3). Slumpfrö: ${Math.random().toString(36).slice(2)}`,
+I kategorin "Vägmärken" MÅSTE varje fråga ha en signCode från listan och handla om det märket. Följ den tilldelade frågevinkeln och märkeskoden för varje fråga i beställningen. Anpassa vinkeln till märkets faktiska regel: hitta aldrig på en väjningsregel för ett märke som inte reglerar väjning. Beskriv vid behov vägens förhållanden, färdriktning och andra trafikanter i texten; bilden visar endast ett vägmärke. Hitta inte på tilläggstavlor eller andra detaljer i bilden. Skriv INTE märkets namn i frågetexten, eleven ser bilden. Variera frågeformuleringar och använd realistiska felsvar. På medel och svår nivå ska situationerna kräva att eleven tillämpar regeln, inte bara känner igen symbolen. I andra kategorier: använd signCode när en bild hjälper, annars "none".`,
+      `Skapa ${data.count} unika flervalsfrågor i kategorin "${data.category}" med svårighetsgrad "${data.difficulty}". Variera korrekt svarsposition (correctIndex 0-3). Slumpfrö: ${Math.random().toString(36).slice(2)}${signPlan.length ? `\nFrågeplan (följ ordningen):\n${signPlan.map((item, i) => `${i + 1}. signCode=${item.signCode}. ${item.angle}`).join("\n")}` : ""}`,
     );
     return out.questions
       .filter((q) => q.options.length >= 2 && q.correctIndex >= 0 && q.correctIndex < q.options.length)
