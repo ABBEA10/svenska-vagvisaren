@@ -71,3 +71,28 @@ export const SIGNS = {
 export type SignCode = keyof typeof SIGNS;
 export const SIGN_CODES = Object.keys(SIGNS) as [SignCode, ...SignCode[]];
 export const signUrl = (code: string) => `/signs/${code}.png`;
+
+/** Assign different signs and question angles before generation, not just a random seed. */
+export function planSignQuestions(count: number) {
+  const codes = [...SIGN_CODES];
+  for (let i = codes.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    const current = codes[i];
+    const other = codes[j];
+    if (current && other) {
+      codes[i] = other;
+      codes[j] = current;
+    }
+  }
+  const angles = [
+    "Handlingsval: beskriv en konkret körsituation och fråga hur föraren ska agera",
+    "Tillåtet eller förbjudet: fråga om en konkret manöver eller ett fordon får passera",
+    "Regelns tillämpning: fråga vem som ska lämna företräde eller vilken regel som gäller i en konkret situation",
+    "Riskbedömning: fråga vad föraren behöver vara beredd på och hur körningen ska anpassas",
+    "Betydelse: fråga vad märket innebär",
+  ];
+  return codes.slice(0, count).map((signCode, i) => ({
+    signCode,
+    angle: angles[i % angles.length],
+  }));
+}
