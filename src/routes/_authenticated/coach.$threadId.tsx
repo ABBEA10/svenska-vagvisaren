@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport, type UIMessage } from "ai";
-import { useMemo } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { toast } from "sonner";
 import { ArrowLeft, Loader2 } from "lucide-react";
 import { Conversation, ConversationContent, ConversationScrollButton } from "@/components/ai-elements/conversation";
@@ -37,11 +37,18 @@ function ThreadPage() {
       return data.map((m) => ({ id: m.message_id, role: m.role, parts: m.parts }) as unknown as UIMessage);
     },
   });
-  if (isLoading || !data) return <div className="flex h-full items-center justify-center"><Loader2 className="animate-spin" /></div>;
-  return <ChatWindow key={threadId} threadId={threadId} initial={data} />;
+  const { data: thread } = useQuery({
+    queryKey: ["thread", threadId],
+    queryFn: async () => {
+      const { data } = await supabase.from("chat_threads").select("kind, title").eq("id", threadId).maybeSingle();
+      return data;
+    },
+  });
+  if (isLoading || !data || !thread) return <div className="flex h-full items-center justify-center"><Loader2 className="animate-spin" /></div>;
+  return <ChatWindow key={threadId} threadId={threadId} initial={data} kind={thread.kind} title={thread.title} />;
 }
 
-function ChatWindow({ threadId, initial }: { threadId: string; initial: UIMessage[] }) {
+function ChatWindow({ threadId, initial, kind, title }: { threadId: string; initial: UIMessage[]; kind: string; title: string }) {
   const qc = useQueryClient();
   const transport = useMemo(
     () =>
@@ -66,6 +73,13 @@ function ChatWindow({ threadId, initial }: { threadId: string; initial: UIMessag
     },
   });
   const busy = status === "submitted" || status === "streaming";
+  const started = useRef(false);
+  useEffect(() => {
+    if (kind === "driving_test" && initial.length === 0 && !started.current) {
+      started.current = true;
+      sendMessage({ text: `Jag är redo. Starta den simulerade uppkörningen. ${title.replace("Uppkörning: ", "Moment: ")}` });
+    }
+  }, [kind, initial.length, title, sendMessage]);
 
   return (
     <div className="flex h-full flex-col">
@@ -74,7 +88,7 @@ function ChatWindow({ threadId, initial }: { threadId: string; initial: UIMessag
       </div>
       <Conversation className="flex-1">
         <ConversationContent className="mx-auto w-full max-w-3xl">
-          {messages.length === 0 && (
+          {messages.length === 0 && kind !== "driving_test" && (
             <div className="flex flex-col items-center gap-4 py-12 text-center">
               <img src={logo} alt="" width={72} height={72} className="size-18" />
               <h2 className="text-2xl font-extrabold">Vad vill du öva på?</h2>

@@ -39,6 +39,8 @@ export const Route = createFileRoute("/_authenticated/teori")({
       { property: "og:description", content: "Obegränsade teorifrågor, simulerade Trafikverksprov och bildfrågor." },
     ],
   }),
+  validateSearch: (s: Record<string, unknown>): { category?: string } =>
+    typeof s.category === "string" ? { category: s.category } : {},
   component: TheoryPage,
 });
 
@@ -59,7 +61,10 @@ function shuffle<T>(a: T[]) {
 function TheoryPage() {
   const gen = useServerFn(generateQuestions);
   const [mode, setMode] = useState<Mode>("practice");
-  const [category, setCategory] = useState<string>(CATEGORIES[0]);
+  const search = Route.useSearch();
+  const [category, setCategory] = useState<string>(
+    search.category && (CATEGORIES as readonly string[]).includes(search.category) ? search.category : CATEGORIES[0],
+  );
   const [difficulty, setDifficulty] = useState<Difficulty>("medel");
   const [loading, setLoading] = useState(false);
   const [session, setSession] = useState<Session | null>(null);
