@@ -1,14 +1,14 @@
 # Körkortscoachen roadmap
 
-## Version 1 (kärnan)
-- [ ] Dashboard (nivå, veckomål, dagens uppgift, nedräkning)
-- [ ] AI Coach med flera samtal
-- [ ] Teoriprov (en i taget / fullt prov, svårighetsgrad, 9 kategorier)
-- [ ] Simulerat Trafikverksprov (65 frågor, 50 min, godkänt 52/65)
-- [ ] Bildbaserade trafiksituationer
-- [ ] Tydlig officiell källa (paragraf + länk) på varje svar
-- [ ] Flashcards med spaced repetition
-- [ ] Körloggbok med statistik
+## Version 1 (kärnan) – klar
+- [x] Dashboard (nivå, veckomål, dagens uppgift, nedräkning)
+- [x] AI Coach med flera samtal
+- [x] Teoriprov (en i taget / fullt prov, svårighetsgrad, 9 kategorier)
+- [x] Simulerat Trafikverksprov (65 frågor, 50 min, godkänt 52/65)
+- [x] Bildbaserade trafiksituationer (4 bilder, 8 frågor)
+- [x] Tydlig officiell källa (paragraf + länk) på varje svar
+- [x] Flashcards med spaced repetition
+- [x] Körloggbok med statistik
 
 ## Senare
-- Uppkörningstränare, 8-veckorsschema, svaghetsanalys, fler badges/utmaningar, röstassistent
+- Fler bildsituationer, uppkörningstränare, 8-veckorsschema, svaghetsanalys, badges/utmaningar, röstassistent
