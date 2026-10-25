@@ -2,6 +2,7 @@ import rondell from "@/assets/sit-rondell.jpg";
 import overgang from "@/assets/sit-overgangsstalle.jpg";
 import alg from "@/assets/sit-alg.jpg";
 import hoger from "@/assets/sit-hogerregel.jpg";
+import type { SourceKey } from "./sources";
 
 export type Question = {
   question: string;
@@ -10,6 +11,8 @@ export type Question = {
   explanation: string;
   category: string;
   image?: string;
+  sourceKey?: SourceKey;
+  sourceRef?: string;
 };
 
 /** Picture-based traffic situations. */
@@ -26,6 +29,8 @@ export const SITUATIONS: Question[] = [
     ],
     correctIndex: 0,
     explanation: "Väjningspliktsmärket och hajtänderna betyder att du ska lämna företräde åt trafik som redan är i cirkulationsplatsen. Du behöver inte stanna om det är fritt.",
+    sourceKey: "trafikforordningen",
+    sourceRef: "3 kap. 18 §",
   },
   {
     image: rondell,
@@ -39,6 +44,8 @@ export const SITUATIONS: Question[] = [
     ],
     correctIndex: 0,
     explanation: "Ska du ta första avfarten håller du till höger och visar tecken höger redan innan du kör in i rondellen.",
+    sourceKey: "trafikforordningen",
+    sourceRef: "3 kap. 22 §",
   },
   {
     image: overgang,
@@ -52,6 +59,8 @@ export const SITUATIONS: Question[] = [
     ],
     correctIndex: 0,
     explanation: "Du har väjningsplikt mot gående som är på väg ut på ett obevakat övergångsställe. Anpassa farten i god tid och stanna vid behov.",
+    sourceKey: "trafikforordningen",
+    sourceRef: "3 kap. 61 §",
   },
   {
     image: overgang,
@@ -65,6 +74,8 @@ export const SITUATIONS: Question[] = [
     ],
     correctIndex: 0,
     explanation: "Det är förbjudet att köra om ett fordon som stannat för att släppa fram gående vid ett övergångsställe. Räkna med att någon går över.",
+    sourceKey: "trafikforordningen",
+    sourceRef: "3 kap. 33 §",
   },
   {
     image: alg,
@@ -78,6 +89,8 @@ export const SITUATIONS: Question[] = [
     ],
     correctIndex: 0,
     explanation: "Älgar går ofta flera tillsammans. Sänk farten rejält och var beredd att stanna. Helljus kan blända djuret så det står still på vägen.",
+    sourceKey: "trafikforordningen",
+    sourceRef: "3 kap. 14 §",
   },
   {
     image: alg,
@@ -91,6 +104,8 @@ export const SITUATIONS: Question[] = [
     ],
     correctIndex: 0,
     explanation: "Varningsmärket A19 'Varning för älg' sätts upp där risken för viltolyckor är stor. Anpassa farten, särskilt i gryning och skymning.",
+    sourceKey: "vagmarkesforordningen",
+    sourceRef: "A19 Varning för älg",
   },
   {
     image: hoger,
@@ -104,6 +119,8 @@ export const SITUATIONS: Question[] = [
     ],
     correctIndex: 0,
     explanation: "I en korsning utan vägmärken gäller högerregeln: du har väjningsplikt mot fordon som kommer från höger.",
+    sourceKey: "trafikforordningen",
+    sourceRef: "3 kap. 21 §",
   },
   {
     image: hoger,
@@ -117,6 +134,8 @@ export const SITUATIONS: Question[] = [
     ],
     correctIndex: 0,
     explanation: "Skymd sikt och högerregel kräver att du sänker farten i god tid så att du kan lämna företräde.",
+    sourceKey: "trafikforordningen",
+    sourceRef: "3 kap. 14 §",
   },
 ];
 

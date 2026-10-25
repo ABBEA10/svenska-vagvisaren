@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { SOURCE_KEYS, SOURCES } from "./sources";
 
 const questionSchema = z.object({
   questions: z.array(
@@ -9,10 +10,16 @@ const questionSchema = z.object({
       options: z.array(z.string()),
       correctIndex: z.number(),
       explanation: z.string(),
+      sourceKey: z.enum(SOURCE_KEYS),
+      sourceRef: z.string(),
     }),
   ),
 });
 export type TheoryQuestion = z.infer<typeof questionSchema>["questions"][number];
+
+const SOURCE_GUIDE = Object.entries(SOURCES)
+  .map(([k, v]) => `- ${k}: ${v.name}`)
+  .join("\n");
 
 export const generateQuestions = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
@@ -25,7 +32,10 @@ export const generateQuestions = createServerFn({ method: "POST" })
     const { generateStructured } = await import("./ai.server");
     const out = await generateStructured(
       questionSchema,
-      "Du är en expert på det svenska teoriprovet för B-körkort (Trafikverket). Skriv på korrekt svenska. Frågorna ska följa svensk trafiklagstiftning och vara realistiska, som på riktiga provet. Varje fråga har exakt 4 svarsalternativ med ett korrekt svar. Förklaringen ska vara kort, pedagogisk och nämna regeln.",
+      `Du är en expert på det svenska teoriprovet för B-körkort (Trafikverket). Skriv på korrekt svenska. Frågorna ska följa gällande svensk trafiklagstiftning och vara realistiska, som på riktiga provet. Varje fråga har exakt 4 svarsalternativ med ett korrekt svar. Förklaringen ska vara kort och pedagogisk.
+Varje fråga MÅSTE ha en källa. Välj sourceKey bland endast dessa officiella källor:
+${SOURCE_GUIDE}
+sourceRef ska vara den exakta hänvisningen, t.ex. "3 kap. 18 §" eller vägmärkets beteckning "B1". Skriv bara en paragraf du är säker på; är du osäker, ange kapitlet. Skapa inte frågor som du inte kan belägga med någon av källorna.`,
       `Skapa ${data.count} unika flervalsfrågor i kategorin "${data.category}" med svårighetsgrad "${data.difficulty}". Variera korrekt svarsposition (correctIndex 0-3). Slumpfrö: ${Math.random().toString(36).slice(2)}`,
     );
     return out.questions
