@@ -10,33 +10,154 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as AuthenticatedCoachRouteImport } from './routes/_authenticated/coach'
+import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedFlashcardsRouteImport } from './routes/_authenticated/flashcards'
+import { Route as AuthenticatedKorloggRouteImport } from './routes/_authenticated/korlogg'
+import { Route as AuthenticatedTeoriRouteImport } from './routes/_authenticated/teori'
+import { Route as ApiChatRouteImport } from './routes/api/chat'
+import { Route as AuthenticatedCoachIndexRouteImport } from './routes/_authenticated/coach.index'
+import { Route as AuthenticatedCoachThreadIdRouteImport } from './routes/_authenticated/coach.$threadId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedCoachRoute = AuthenticatedCoachRouteImport.update({
+  id: '/coach',
+  path: '/coach',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedFlashcardsRoute = AuthenticatedFlashcardsRouteImport.update({
+  id: '/flashcards',
+  path: '/flashcards',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedKorloggRoute = AuthenticatedKorloggRouteImport.update({
+  id: '/korlogg',
+  path: '/korlogg',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedTeoriRoute = AuthenticatedTeoriRouteImport.update({
+  id: '/teori',
+  path: '/teori',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const ApiChatRoute = ApiChatRouteImport.update({
+  id: '/api/chat',
+  path: '/api/chat',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedCoachIndexRoute = AuthenticatedCoachIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AuthenticatedCoachRoute,
+} as any)
+const AuthenticatedCoachThreadIdRoute =
+  AuthenticatedCoachThreadIdRouteImport.update({
+    id: '/$threadId',
+    path: '/$threadId',
+    getParentRoute: () => AuthenticatedCoachRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
+  '/coach': typeof AuthenticatedCoachRouteWithChildren
+  '/dashboard': typeof AuthenticatedDashboardRoute
+  '/flashcards': typeof AuthenticatedFlashcardsRoute
+  '/korlogg': typeof AuthenticatedKorloggRoute
+  '/teori': typeof AuthenticatedTeoriRoute
+  '/api/chat': typeof ApiChatRoute
+  '/coach/$threadId': typeof AuthenticatedCoachThreadIdRoute
+  '/coach/': typeof AuthenticatedCoachIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
+  '/dashboard': typeof AuthenticatedDashboardRoute
+  '/flashcards': typeof AuthenticatedFlashcardsRoute
+  '/korlogg': typeof AuthenticatedKorloggRoute
+  '/teori': typeof AuthenticatedTeoriRoute
+  '/api/chat': typeof ApiChatRoute
+  '/coach/$threadId': typeof AuthenticatedCoachThreadIdRoute
+  '/coach': typeof AuthenticatedCoachIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/auth': typeof AuthRoute
+  '/_authenticated/coach': typeof AuthenticatedCoachRouteWithChildren
+  '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/flashcards': typeof AuthenticatedFlashcardsRoute
+  '/_authenticated/korlogg': typeof AuthenticatedKorloggRoute
+  '/_authenticated/teori': typeof AuthenticatedTeoriRoute
+  '/api/chat': typeof ApiChatRoute
+  '/_authenticated/coach/$threadId': typeof AuthenticatedCoachThreadIdRoute
+  '/_authenticated/coach/': typeof AuthenticatedCoachIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/auth'
+    | '/coach'
+    | '/dashboard'
+    | '/flashcards'
+    | '/korlogg'
+    | '/teori'
+    | '/api/chat'
+    | '/coach/$threadId'
+    | '/coach/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/auth'
+    | '/dashboard'
+    | '/flashcards'
+    | '/korlogg'
+    | '/teori'
+    | '/api/chat'
+    | '/coach/$threadId'
+    | '/coach'
+  id:
+    | '__root__'
+    | '/'
+    | '/_authenticated'
+    | '/auth'
+    | '/_authenticated/coach'
+    | '/_authenticated/dashboard'
+    | '/_authenticated/flashcards'
+    | '/_authenticated/korlogg'
+    | '/_authenticated/teori'
+    | '/api/chat'
+    | '/_authenticated/coach/$threadId'
+    | '/_authenticated/coach/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
+  AuthRoute: typeof AuthRoute
+  ApiChatRoute: typeof ApiChatRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +169,116 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/coach': {
+      id: '/_authenticated/coach'
+      path: '/coach'
+      fullPath: '/coach'
+      preLoaderRoute: typeof AuthenticatedCoachRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/dashboard': {
+      id: '/_authenticated/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof AuthenticatedDashboardRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/flashcards': {
+      id: '/_authenticated/flashcards'
+      path: '/flashcards'
+      fullPath: '/flashcards'
+      preLoaderRoute: typeof AuthenticatedFlashcardsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/korlogg': {
+      id: '/_authenticated/korlogg'
+      path: '/korlogg'
+      fullPath: '/korlogg'
+      preLoaderRoute: typeof AuthenticatedKorloggRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/teori': {
+      id: '/_authenticated/teori'
+      path: '/teori'
+      fullPath: '/teori'
+      preLoaderRoute: typeof AuthenticatedTeoriRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/api/chat': {
+      id: '/api/chat'
+      path: '/api/chat'
+      fullPath: '/api/chat'
+      preLoaderRoute: typeof ApiChatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/coach/': {
+      id: '/_authenticated/coach/'
+      path: '/'
+      fullPath: '/coach/'
+      preLoaderRoute: typeof AuthenticatedCoachIndexRouteImport
+      parentRoute: typeof AuthenticatedCoachRoute
+    }
+    '/_authenticated/coach/$threadId': {
+      id: '/_authenticated/coach/$threadId'
+      path: '/$threadId'
+      fullPath: '/coach/$threadId'
+      preLoaderRoute: typeof AuthenticatedCoachThreadIdRouteImport
+      parentRoute: typeof AuthenticatedCoachRoute
+    }
   }
 }
 
+interface AuthenticatedCoachRouteChildren {
+  AuthenticatedCoachThreadIdRoute: typeof AuthenticatedCoachThreadIdRoute
+  AuthenticatedCoachIndexRoute: typeof AuthenticatedCoachIndexRoute
+}
+
+const AuthenticatedCoachRouteChildren: AuthenticatedCoachRouteChildren = {
+  AuthenticatedCoachThreadIdRoute: AuthenticatedCoachThreadIdRoute,
+  AuthenticatedCoachIndexRoute: AuthenticatedCoachIndexRoute,
+}
+
+const AuthenticatedCoachRouteWithChildren =
+  AuthenticatedCoachRoute._addFileChildren(AuthenticatedCoachRouteChildren)
+
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedCoachRoute: typeof AuthenticatedCoachRouteWithChildren
+  AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedFlashcardsRoute: typeof AuthenticatedFlashcardsRoute
+  AuthenticatedKorloggRoute: typeof AuthenticatedKorloggRoute
+  AuthenticatedTeoriRoute: typeof AuthenticatedTeoriRoute
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedCoachRoute: AuthenticatedCoachRouteWithChildren,
+  AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedFlashcardsRoute: AuthenticatedFlashcardsRoute,
+  AuthenticatedKorloggRoute: AuthenticatedKorloggRoute,
+  AuthenticatedTeoriRoute: AuthenticatedTeoriRoute,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
+  AuthRoute: AuthRoute,
+  ApiChatRoute: ApiChatRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
