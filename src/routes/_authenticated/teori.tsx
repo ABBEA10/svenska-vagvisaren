@@ -42,7 +42,7 @@ export const Route = createFileRoute("/_authenticated/teori")({
 });
 
 type Mode = "practice" | "full" | "exam" | "images";
-type Session = { mode: Mode; questions: Question[]; answers: (number | null)[]; endsAt?: number };
+type Session = { mode: Mode; questions: Question[]; answers: (number | null)[]; endsAt?: number | undefined };
 
 const MODES: { id: Mode; title: string; text: string; icon: typeof Zap }[] = [
   { id: "practice", title: "Snabbövning", text: "En fråga i taget med förklaring direkt", icon: Zap },
@@ -182,7 +182,7 @@ function TheoryPage() {
   );
 }
 
-function useCountdown(endsAt?: number) {
+function useCountdown(endsAt: number | undefined) {
   const [now, setNow] = useState(Date.now());
   useEffect(() => {
     if (!endsAt) return;
@@ -198,7 +198,7 @@ function Quiz({ session, onExit, onMore }: { session: Session; onExit: () => voi
   const [done, setDone] = useState(false);
   const instant = session.mode === "practice" || session.mode === "images";
   const remaining = useCountdown(done ? undefined : session.endsAt);
-  const q = session.questions[index];
+  const q = session.questions[index]!;
   const picked = answers[index];
 
   async function finish(final = answers) {
