@@ -75,10 +75,13 @@ function ChatWindow({ threadId, initial, kind, title }: { threadId: string; init
   const busy = status === "submitted" || status === "streaming";
   const started = useRef(false);
   useEffect(() => {
-    if (kind === "driving_test" && initial.length === 0 && !started.current) {
+    if (kind !== "driving_test" || initial.length > 0 || started.current) return;
+    // Delay so StrictMode's mount/unmount cycle doesn't swallow the first send.
+    const t = setTimeout(() => {
       started.current = true;
       sendMessage({ text: `Jag är redo. Starta den simulerade uppkörningen. ${title.replace("Uppkörning: ", "Moment: ")}` });
-    }
+    }, 300);
+    return () => clearTimeout(t);
   }, [kind, initial.length, title, sendMessage]);
 
   return (
