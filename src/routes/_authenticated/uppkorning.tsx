@@ -41,7 +41,10 @@ function DrivingTestPage() {
   });
 
   async function start() {
-    if (!selected.length) return toast.error("Välj minst ett moment");
+    if (!selected.length) {
+      toast.error("Välj minst ett moment");
+      return;
+    }
     setBusy(true);
     const { data: u } = await supabase.auth.getUser();
     const { data, error } = await supabase
@@ -50,7 +53,10 @@ function DrivingTestPage() {
       .select("id")
       .single();
     setBusy(false);
-    if (error) return toast.error("Kunde inte starta");
+    if (error) {
+      toast.error("Kunde inte starta");
+      return;
+    }
     qc.invalidateQueries({ queryKey: ["threads"] });
     navigate({ to: "/coach/$threadId", params: { threadId: data.id } });
   }

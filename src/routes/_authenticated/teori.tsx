@@ -40,7 +40,7 @@ export const Route = createFileRoute("/_authenticated/teori")({
     ],
   }),
   validateSearch: (s: Record<string, unknown>): { category?: string } =>
-    typeof s.category === "string" ? { category: s.category } : {},
+    typeof s['category'] === "string" ? { category: s['category'] } : {},
   component: TheoryPage,
 });
 
