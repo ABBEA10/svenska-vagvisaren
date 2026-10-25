@@ -18,6 +18,7 @@ function SourceLink({ q }: { q: Question }) {
   if (!q.sourceKey) return null;
   const src = SOURCES[q.sourceKey];
   return (
+    <div>
     <a
       href={src.url}
       target="_blank"
@@ -27,6 +28,10 @@ function SourceLink({ q }: { q: Question }) {
       <BookMarked className="size-3.5" /> Källa: {src.name}
       {q.sourceRef ? ` · ${q.sourceRef}` : ""} ↗
     </a>
+    <p className="mt-1 text-xs text-muted-foreground">
+      {q.reviewedAt ? `Kontrollerad mot officiell källa ${q.reviewedAt}.` : "AI-genererat svar – hänvisningen är inte faktagranskad."}
+    </p>
+    </div>
   );
 }
 

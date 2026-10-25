@@ -19,6 +19,8 @@ export const Route = createFileRoute("/_authenticated/analys")({
       { name: "description", content: "AI hittar dina problemområden och ger extra övningar." },
       { property: "og:title", content: "Svaghetsanalys – Körkortscoachen AI" },
       { property: "og:description", content: "AI hittar dina problemområden och ger extra övningar." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: AnalysisPage,
@@ -141,6 +143,7 @@ function AnalysisPage() {
                       <a href={src.url} target="_blank" rel="noopener noreferrer" className="mt-2 inline-flex items-center gap-1.5 rounded-lg border-2 bg-card px-2.5 py-1 text-xs font-semibold hover:border-primary">
                         <BookMarked className="size-3.5" /> Källa: {src.name} · {q.sourceRef} ↗
                       </a>
+                      <p className="mt-1 text-xs text-muted-foreground">AI-genererat svar – hänvisningen är inte faktagranskad.</p>
                     </div>
                   )}
                 </div>

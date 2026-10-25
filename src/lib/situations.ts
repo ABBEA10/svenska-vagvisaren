@@ -14,6 +14,7 @@ export type Question = {
   sourceKey?: SourceKey;
   sourceRef?: string;
   signCode?: string;
+  reviewedAt?: string;
 };
 
 /** Picture-based traffic situations. */
