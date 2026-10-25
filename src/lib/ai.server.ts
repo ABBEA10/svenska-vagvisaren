@@ -1,5 +1,5 @@
 import { createOpenAI } from "@ai-sdk/openai";
-import { Output, streamText, type ModelMessage, type UIMessage } from "ai";
+import { Output, streamText, type LanguageModel, type ModelMessage, type UIMessage } from "ai";
 import type { z } from "zod";
 
 import {
@@ -47,7 +47,7 @@ export function streamCoachChat(
   const runIdFetch = createLovableAiGatewayRunIdFetch(getLovableAiGatewayRunId(request));
   const provider = makeProvider(apiKey, runIdFetch.fetch as typeof fetch);
   const result = streamText({
-    model: provider.responses(AI_MODEL),
+    model: provider.responses(AI_MODEL) as unknown as LanguageModel,
     instructions,
     messages,
     abortSignal: request.signal,
@@ -87,7 +87,7 @@ export async function generateStructured<T>(
   const provider = makeProvider(apiKey, runIdFetch.fetch as typeof fetch);
   try {
     const result = streamText({
-      model: provider.responses(AI_MODEL),
+      model: provider.responses(AI_MODEL) as unknown as LanguageModel,
       instructions,
       prompt,
       output: Output.object({ schema }),

@@ -202,7 +202,10 @@ function DatesDialog({ theory, driving, goal }: { theory: string; driving: strin
       .from("profiles")
       .update({ theory_date: t || null, driving_date: d || null, weekly_goal: Math.min(7, Math.max(1, g)) })
       .eq("id", u.user!.id);
-    if (error) return toast.error("Kunde inte spara");
+    if (error) {
+      toast.error("Kunde inte spara");
+      return;
+    }
     toast.success("Sparat!");
     setOpen(false);
     qc.invalidateQueries({ queryKey: ["dashboard"] });

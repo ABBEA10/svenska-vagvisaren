@@ -56,7 +56,10 @@ function LogPage() {
       rating,
       notes: notes || null,
     });
-    if (error) return toast.error("Kunde inte spara");
+    if (error) {
+      toast.error("Kunde inte spara");
+      return;
+    }
     toast.success(`Körning sparad! +${XP.drivingSession} XP`);
     await awardXp(XP.drivingSession);
     setSkills([]);
