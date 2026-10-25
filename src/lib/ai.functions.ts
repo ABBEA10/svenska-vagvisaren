@@ -2,6 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { SOURCE_KEYS, SOURCES } from "./sources";
+import { SIGN_CODES, SIGNS } from "./signs";
 
 const questionSchema = z.object({
   questions: z.array(
@@ -12,10 +13,15 @@ const questionSchema = z.object({
       explanation: z.string(),
       sourceKey: z.enum(SOURCE_KEYS),
       sourceRef: z.string(),
+      signCode: z.enum(["none", ...SIGN_CODES]),
     }),
   ),
 });
 export type TheoryQuestion = z.infer<typeof questionSchema>["questions"][number];
+
+const SIGN_GUIDE = Object.entries(SIGNS)
+  .map(([k, v]) => `- ${k}: ${v}`)
+  .join("\n");
 
 const SOURCE_GUIDE = Object.entries(SOURCES)
   .map(([k, v]) => `- ${k}: ${v.name}`)
@@ -35,7 +41,10 @@ export const generateQuestions = createServerFn({ method: "POST" })
       `Du är en expert på det svenska teoriprovet för B-körkort (Trafikverket). Skriv på korrekt svenska. Frågorna ska följa gällande svensk trafiklagstiftning och vara realistiska, som på riktiga provet. Varje fråga har exakt 4 svarsalternativ med ett korrekt svar. Förklaringen ska vara kort och pedagogisk.
 Varje fråga MÅSTE ha en källa. Välj sourceKey bland endast dessa officiella källor:
 ${SOURCE_GUIDE}
-sourceRef ska vara den exakta hänvisningen, t.ex. "3 kap. 18 §" eller vägmärkets beteckning "B1". Skriv bara en paragraf du är säker på; är du osäker, ange kapitlet. Skapa inte frågor som du inte kan belägga med någon av källorna.`,
+sourceRef ska vara den exakta hänvisningen, t.ex. "3 kap. 18 §" eller vägmärkets beteckning "B1". Skriv bara en paragraf du är säker på; är du osäker, ange kapitlet. Skapa inte frågor som du inte kan belägga med någon av källorna.
+Vägmärken med bild: signCode kan vara en av dessa (koden visar en bild av märket för eleven):
+${SIGN_GUIDE}
+I kategorin "Vägmärken" MÅSTE varje fråga ha en signCode från listan och handla om det märket (t.ex. "Vad betyder vägmärket?" eller "Hur ska du agera vid detta märke?"). Skriv då INTE märkets namn i frågetexten, eleven ser bilden. Använd olika märken. I andra kategorier: använd signCode när en bild hjälper, annars "none".`,
       `Skapa ${data.count} unika flervalsfrågor i kategorin "${data.category}" med svårighetsgrad "${data.difficulty}". Variera korrekt svarsposition (correctIndex 0-3). Slumpfrö: ${Math.random().toString(36).slice(2)}`,
     );
     return out.questions
