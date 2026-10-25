@@ -56,6 +56,7 @@ export type Database = {
         Row: {
           created_at: string
           id: string
+          kind: string
           title: string
           updated_at: string
           user_id: string
@@ -63,6 +64,7 @@ export type Database = {
         Insert: {
           created_at?: string
           id?: string
+          kind?: string
           title?: string
           updated_at?: string
           user_id: string
@@ -70,6 +72,7 @@ export type Database = {
         Update: {
           created_at?: string
           id?: string
+          kind?: string
           title?: string
           updated_at?: string
           user_id?: string
@@ -210,6 +213,33 @@ export type Database = {
           difficulty?: string
           id?: string
           question?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      study_plans: {
+        Row: {
+          completed: string[]
+          created_at: string
+          id: string
+          plan: Json
+          start_date: string
+          user_id: string
+        }
+        Insert: {
+          completed?: string[]
+          created_at?: string
+          id?: string
+          plan: Json
+          start_date?: string
+          user_id: string
+        }
+        Update: {
+          completed?: string[]
+          created_at?: string
+          id?: string
+          plan?: Json
+          start_date?: string
           user_id?: string
         }
         Relationships: []
