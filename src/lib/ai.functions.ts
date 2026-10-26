@@ -2,6 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { SOURCE_KEYS, SOURCES } from "./sources";
+import { TF_PARAGRAPHS, verifyTfRef } from "./tf-paragraphs";
 import { SIGN_CODES, SIGNS, planSignQuestions } from "./signs";
 
 const questionSchema = z.object({
@@ -23,6 +24,13 @@ const SIGN_GUIDE = Object.entries(SIGNS)
   .map(([k, v]) => `- ${k}: ${v}`)
   .join("\n");
 
+const TF_GUIDE = Object.entries(TF_PARAGRAPHS)
+  .map(([k, v]) => `- ${k}: ${v}`)
+  .join("\n");
+
+const fixRef = <T extends { sourceKey: string; sourceRef: string }>(q: T): T =>
+  q.sourceKey === "trafikforordningen" ? { ...q, sourceRef: verifyTfRef(q.sourceRef) } : q;
+
 const SOURCE_GUIDE = Object.entries(SOURCES)
   .map(([k, v]) => `- ${k}: ${v.name}`)
   .join("\n");
@@ -42,7 +50,9 @@ export const generateQuestions = createServerFn({ method: "POST" })
       `Du är en expert på det svenska teoriprovet för B-körkort (Trafikverket). Skriv på korrekt svenska. Frågorna ska följa gällande svensk trafiklagstiftning och vara realistiska, som på riktiga provet. Varje fråga har exakt 4 svarsalternativ med ett korrekt svar. Förklaringen ska vara kort och pedagogisk.
 Varje fråga MÅSTE ha en källa. Välj sourceKey bland endast dessa officiella källor:
 ${SOURCE_GUIDE}
-sourceRef ska vara den exakta hänvisningen, t.ex. "3 kap. 18 §" eller vägmärkets beteckning "B1". Skriv bara en paragraf du är säker på; är du osäker, ange kapitlet. Skapa inte frågor som du inte kan belägga med någon av källorna.
+sourceRef ska vara den exakta hänvisningen, t.ex. "3 kap. 18 §" eller vägmärkets beteckning "B1". Skriv bara en paragraf du är säker på; är du osäker, ange kapitlet. För trafikförordningen, använd endast dessa kontrollerade paragrafer (annars bara kapitlet):
+${TF_GUIDE}
+Skapa inte frågor som du inte kan belägga med någon av källorna.
 Vägmärken med bild: signCode kan vara en av dessa (koden visar en bild av märket för eleven):
 ${SIGN_GUIDE}
 I kategorin "Vägmärken" MÅSTE varje fråga ha en signCode från listan och handla om det märket. Följ den tilldelade frågevinkeln och märkeskoden för varje fråga i beställningen. Anpassa vinkeln till märkets faktiska regel: hitta aldrig på en väjningsregel för ett märke som inte reglerar väjning. Beskriv vid behov vägens förhållanden, färdriktning och andra trafikanter i texten; bilden visar endast ett vägmärke. Hitta inte på tilläggstavlor eller andra detaljer i bilden. Skriv INTE märkets namn i frågetexten, eleven ser bilden. Variera frågeformuleringar och använd realistiska felsvar. På medel och svår nivå ska situationerna kräva att eleven tillämpar regeln, inte bara känner igen symbolen. I andra kategorier: använd signCode när en bild hjälper, annars "none".`,
@@ -50,7 +60,8 @@ I kategorin "Vägmärken" MÅSTE varje fråga ha en signCode från listan och ha
     );
     return out.questions
       .filter((q) => q.options.length >= 2 && q.correctIndex >= 0 && q.correctIndex < q.options.length)
-      .slice(0, data.count);
+      .slice(0, data.count)
+      .map(fixRef);
   });
 
 const cardSchema = z.object({
@@ -180,13 +191,15 @@ export const analyzeWeaknesses = createServerFn({ method: "POST" })
     const statText = Object.entries(stats).map(([k, v]) => `${k}: ${v.c}/${v.t}`).join("; ");
     const driveText = (sessions ?? []).map((s) => `${s.skills.join("/")} betyg ${s.rating}${s.notes ? ` (${s.notes.slice(0, 80)})` : ""}`).join("; ");
     const { generateStructured } = await import("./ai.server");
-    return generateStructured(
+    const res = await generateStructured(
       analysisSchema,
       `Du är en svensk trafiklärare som analyserar en elevs resultat inför B-körkort. Svara på svenska.
 summary: 2–3 meningar. problems: 2–4 problemområden med varför och en konkret åtgärd. exercises: 5 extra flervalsfrågor (exakt 4 alternativ) riktade mot elevens fel.
 Varje övning MÅSTE ha källa. Tillåtna sourceKey:
 ${SOURCE_GUIDE}
-sourceRef = exakt paragraf eller vägmärkesbeteckning; är du osäker, ange kapitlet.`,
+sourceRef = exakt paragraf eller vägmärkesbeteckning; är du osäker, ange kapitlet. Kontrollerade paragrafer i trafikförordningen:
+${TF_GUIDE}`,
       `Resultat per kategori: ${statText || "inga ännu"}.\nSenaste felsvar:\n${wrong.join("\n") || "inga"}\nKörlogg: ${driveText || "inga körningar"}`,
     );
+    return { ...res, exercises: res.exercises.map(fixRef) };
   });

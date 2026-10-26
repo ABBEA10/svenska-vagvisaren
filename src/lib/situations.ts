@@ -47,7 +47,7 @@ export const SITUATIONS: Question[] = [
     correctIndex: 0,
     explanation: "Ska du ta första avfarten håller du till höger och visar tecken höger redan innan du kör in i rondellen.",
     sourceKey: "trafikforordningen",
-    sourceRef: "3 kap.",
+    sourceRef: "3 kap. 24 §",
   },
   {
     image: overgang,
@@ -77,7 +77,7 @@ export const SITUATIONS: Question[] = [
     correctIndex: 0,
     explanation: "Det är förbjudet att köra om ett fordon som stannat för att släppa fram gående vid ett övergångsställe. Räkna med att någon går över.",
     sourceKey: "trafikforordningen",
-    sourceRef: "3 kap.",
+    sourceRef: "3 kap. 40–41 §§",
   },
   {
     image: alg,
