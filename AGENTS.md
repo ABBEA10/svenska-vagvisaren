@@ -16,3 +16,4 @@
 - Road-sign pictures are local files in `public/signs` listed in `src/lib/signs.ts`; AI may only reference those codes. Why: the picture always matches the sign name.
 - Road-sign question batches receive a shuffled sign selection and rotating question angles from `planSignQuestions` before AI generation. Why: recognition-only prompts produce repetitive exercises.
 - Chat threads have a `kind` (`coach` | `driving_test`); the chat route picks the system prompt from it. Why: one chat pipeline serves both coach and driving test simulation.
+- Trafikförordningen paragraph refs from AI are checked against `src/lib/tf-paragraphs.ts`; unknown paragraphs fall back to chapter only. Why: never show a wrong paragraph.
