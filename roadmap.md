@@ -12,5 +12,5 @@
 - [x] Varierade frågevinklar och slumpade märken i vägmärkesövningar
 
 ## Senare
-- [ ] Faktagranska befintliga bildfrågor, vägmärkesnamn och källhänvisningar
+- [x] Faktagranska befintliga bildfrågor, vägmärkesnamn och källhänvisningar
 - Märken/veckoutmaningar, röstassistent, uppläsning, import av provdatum, fler bildsituationer
