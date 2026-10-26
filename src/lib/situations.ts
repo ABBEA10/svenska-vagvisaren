@@ -32,7 +32,7 @@ export const SITUATIONS: Question[] = [
     correctIndex: 0,
     explanation: "Väjningspliktsmärket och hajtänderna betyder att du ska lämna företräde åt trafik som redan är i cirkulationsplatsen. Du behöver inte stanna om det är fritt.",
     sourceKey: "trafikforordningen",
-    sourceRef: "3 kap. 18 §",
+    sourceRef: "3 kap. 22 §",
   },
   {
     image: rondell,
@@ -47,7 +47,7 @@ export const SITUATIONS: Question[] = [
     correctIndex: 0,
     explanation: "Ska du ta första avfarten håller du till höger och visar tecken höger redan innan du kör in i rondellen.",
     sourceKey: "trafikforordningen",
-    sourceRef: "3 kap. 22 §",
+    sourceRef: "3 kap.",
   },
   {
     image: overgang,
@@ -77,7 +77,7 @@ export const SITUATIONS: Question[] = [
     correctIndex: 0,
     explanation: "Det är förbjudet att köra om ett fordon som stannat för att släppa fram gående vid ett övergångsställe. Räkna med att någon går över.",
     sourceKey: "trafikforordningen",
-    sourceRef: "3 kap. 33 §",
+    sourceRef: "3 kap.",
   },
   {
     image: alg,
@@ -122,7 +122,7 @@ export const SITUATIONS: Question[] = [
     correctIndex: 0,
     explanation: "I en korsning utan vägmärken gäller högerregeln: du har väjningsplikt mot fordon som kommer från höger.",
     sourceKey: "trafikforordningen",
-    sourceRef: "3 kap. 21 §",
+    sourceRef: "3 kap. 18 §",
   },
   {
     image: hoger,
